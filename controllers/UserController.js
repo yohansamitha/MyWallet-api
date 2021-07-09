@@ -78,28 +78,41 @@ const registerUser = async (req, resp) => {
                                 `
                             }
 
-                            transporter.sendMail(mailOption, (emailError, emailInfo) => {
-                                if (emailError) {
-                                    resp.status(500).json({
-                                        message: 'internal Server Error.',
-                                        state: false,
-                                        error: emailError
-                                    });
-                                    return;
-                                }
+                            // transporter.sendMail(mailOption, (emailError, emailInfo) => {
+                            //     if (emailError) {
+                            //         resp.status(500).json({
+                            //             message: 'internal Server Error.',
+                            //             state: false,
+                            //             error: emailError
+                            //         });
+                            //         return;
+                            //     }
+                            //
+                            //     let dataObj = {
+                            //         statusCode: 200,
+                            //         message: 'Success.',
+                            //         token: token,
+                            //         user: req.body.email,
+                            //         state: true
+                            //     }
+                            //
+                            //     resp.status(200).json({dataObj});
+                            //
+                            // })
 
-                                let dataObj = {
-                                    message: 'Success.',
-                                    token: token,
-                                    state: true
-                                }
+                            let dataObj = {
+                                statusCode: 200,
+                                message: 'Success.',
+                                token: token,
+                                user: req.body.email,
+                                state: true
+                            }
 
-                                resp.status(200).json({dataObj});
-
-                            })
+                            resp.status(200).json({dataObj});
 
                         }).catch(savedResponseError => {
                             resp.status(500).json({
+                                statusCode: 500,
                                 message: 'internal Server Error.',
                                 state: false,
                                 error: savedResponseError
@@ -114,12 +127,53 @@ const registerUser = async (req, resp) => {
     })
 };
 
-const getUser = async (req, resp) => {
-    console.log("user get method");
-    resp.status(200).statusText('testing');
+const login = async (req, resp) => {
+    const email = req.headers.email ? req.headers.email : null;
+    const password = req.headers.password ? req.headers.password : null;
+    console.log('email : ' + email)
+    console.log('password : ' + password)
+    try {
+        if (email !== null && password !== null) {
+            console.log('not null')
+            UserSchema.findOne({email: email, userState: true}, (error, result) => {
+                if (result !== null) {
+                    console.log('result ', result)
+                    bcrypt.compare(password, result.password, function (err, finalOutPut) {
+                        if (err) {
+                            resp.status(500).json(err);
+                        }
+                        if (finalOutPut) {
+                            const token = jwt.sign({
+                                email: email,
+                                password: password
+                            }, process.env.JWT_AUTH, {expiresIn: '24h'});
+                            resp.status(200).json({
+                                statusCode: 200,
+                                message: 'success',
+                                token: token,
+                                user: req.headers.email,
+                                state: true
+                            });
+                        } else {
+                            console.log('password wrong')
+                            resp.status(400).json({statusCode: 400, message: 'wrong password..'});
+                        }
+                    })
+                } else {
+                    console.log('no results')
+                    resp.status(400).json({statusCode: 400, message: 'please register..'});
+                }
+            })
+        } else {
+            resp.status(400).json({statusCode: 400, message: 'Please provide valid user name and password'});
+        }
+
+    } catch (e) {
+        resp.status(500).json({statusCode: 500, message: 'internal Server Error..', error: e});
+    }
 };
 
 module.exports = {
     registerUser,
-    getUser
+    login
 }
