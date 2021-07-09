@@ -5,6 +5,7 @@ require('dotenv').config();
 const port = process.env.USER_PORT;
 
 const UserRoutes = require("./routes/UserRoute");
+const IncomeRoutes = require('./routes/IncomeRouts');
 
 const app = express();
 app.use(express.json({limit: '50mb'}));
@@ -29,3 +30,4 @@ mongoose.connect(
 }))
 
 app.use("/api/v1/userRoute", UserRoutes);
+app.use("/app/v1/incomeRoute", IncomeRoutes)

@@ -78,37 +78,36 @@ const registerUser = async (req, resp) => {
                                 `
                             }
 
-                            // transporter.sendMail(mailOption, (emailError, emailInfo) => {
-                            //     if (emailError) {
-                            //         resp.status(500).json({
-                            //             message: 'internal Server Error.',
-                            //             state: false,
-                            //             error: emailError
-                            //         });
-                            //         return;
-                            //     }
-                            //
-                            //     let dataObj = {
-                            //         statusCode: 200,
-                            //         message: 'Success.',
-                            //         token: token,
-                            //         user: req.body.email,
-                            //         state: true
-                            //     }
-                            //
-                            //     resp.status(200).json({dataObj});
-                            //
-                            // })
+                            transporter.sendMail(mailOption, (emailError, emailInfo) => {
+                                if (emailError) {
+                                    resp.status(500).json({
+                                        message: 'internal Server Error.',
+                                        state: false,
+                                        error: emailError
+                                    });
+                                    return;
+                                }
 
-                            let dataObj = {
-                                statusCode: 200,
-                                message: 'Success.',
-                                token: token,
-                                user: req.body.email,
-                                state: true
-                            }
+                                let dataObj = {
+                                    statusCode: 200,
+                                    message: 'Success.',
+                                    token: token,
+                                    user: req.body.email,
+                                    state: true
+                                }
 
-                            resp.status(200).json({dataObj});
+                                resp.status(200).json({dataObj});
+
+                            })
+
+                            // let dataObj = {
+                            //     statusCode: 200,
+                            //     message: 'Success.',
+                            //     token: token,
+                            //     user: req.body.email,
+                            //     state: true
+                            // }
+                            // resp.status(200).json({dataObj});
 
                         }).catch(savedResponseError => {
                             resp.status(500).json({
