@@ -6,13 +6,14 @@ const port = process.env.USER_PORT;
 
 const UserRoutes = require("./routes/UserRoute");
 const IncomeRoutes = require('./routes/IncomeRouts');
+const ExpensesRoutes = require('./routes/ExpensesRouts');
 
 const app = express();
 app.use(express.json({limit: '50mb'}));
 app.use(cors());
 
 mongoose.connect(
-    'mongodb://127.0.0.1:27017/mywallet',
+    'mongodb+srv://admin1user:adminuser1@cluster0.fqtep.mongodb.net/mywallet?retryWrites=true&w=majority',
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -30,4 +31,5 @@ mongoose.connect(
 }))
 
 app.use("/api/v1/userRoute", UserRoutes);
-app.use("/app/v1/incomeRoute", IncomeRoutes)
+app.use("/api/v1/incomeRoute", IncomeRoutes);
+app.use("/api/v1/expensesRoute", ExpensesRoutes);

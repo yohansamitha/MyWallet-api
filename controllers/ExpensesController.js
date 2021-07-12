@@ -1,9 +1,9 @@
-const IncomeSchema = require('../model/IncomeSchema');
+const ExpensesSchema = require('../model/ExpensesSchema');
 let jwt = require('jsonwebtoken');
 
-// add new income
-const addIncome = async (req, resp) => {
-    console.log('add income called', req.headers.token);
+// add new Expenses
+const addExpenses = async (req, resp) => {
+    console.log('add expenses called', req.headers.token);
 
     const token = req.headers.token ? req.headers.token : 'empty';
     let tempEmail = '';
@@ -28,24 +28,24 @@ const addIncome = async (req, resp) => {
     });
 
     isValid.then(value => {
-        console.log('decode value in add income', value);
-        let incomeSchema = new IncomeSchema({
-            incomeName: req.body.incomeName,
+        console.log('decode value in add expenses : ', value);
+        let expensesSchema = new ExpensesSchema({
+            expensesName: req.body.expensesName,
             userEmail: req.body.userEmail,
-            incomeCategory: req.body.incomeCategory,
-            incomeType: req.body.incomeType,
+            expensesCategory: req.body.expensesCategory,
             time: {
                 year: req.body.year,
                 month: req.body.month
             },
-            incomeStatus: req.body.incomeStatus,
-            incomeAmount: req.body.incomeAmount,
-            incomeDescription: req.body.incomeDescription
+            paymentMethod: req.body.paymentMethod,
+            expensesStatus: req.body.expensesStatus,
+            expensesAmount: req.body.expensesAmount,
+            expensesDescription: req.body.expensesDescription
         });
-        incomeSchema.save().then(result => {
+        expensesSchema.save().then(result => {
                 resp.status(201).json({
                     statusCode: 201,
-                    message: 'income saved successful',
+                    message: 'expenses saved successful',
                     dataSet: result
                 });
             }
@@ -62,9 +62,9 @@ const addIncome = async (req, resp) => {
 
 }
 
-// update income
-const updateIncome = async (req, resp) => {
-    console.log('income update method called')
+// update Expenses
+const updateExpenses = async (req, resp) => {
+    console.log('Expenses update method called')
     const token = req.headers.token ? req.headers.token : 'empty';
     let tempEmail = '';
     if ('empty' === token) {
@@ -84,32 +84,32 @@ const updateIncome = async (req, resp) => {
             }
         })
     }).then(value => {
-        console.log('decode value in update income', value);
-        let updateIncome = IncomeSchema.updateOne(
+        console.log('decode value in update Expenses', value);
+        let updateExpense = ExpensesSchema.updateOne(
             {
                 userEmail: tempEmail,
-                incomeName: req.body.incomeName
+                expensesName: req.body.expensesName
             },
             {
                 $set: {
-                    "incomeName": req.body.incomeName,
+                    "expensesName": req.body.expensesName,
                     "userEmail": req.body.userEmail,
-                    "incomeCategory": req.body.incomeCategory,
-                    "incomeType": req.body.incomeType,
-                    "time.year": req.body.year,
-                    "time.month": req.body.month,
-                    "incomeStatus": req.body.incomeStatus,
-                    "incomeAmount": req.body.incomeAmount,
-                    "incomeDescription": req.body.incomeDescription
+                    "expensesCategory": req.body.expensesCategory,
+                    "year": req.body.year,
+                    "month": req.body.month,
+                    "paymentMethod": req.body.paymentMethod,
+                    "expensesStatus": req.body.expensesStatus,
+                    "expensesAmount": req.body.expensesAmount,
+                    "expensesDescription": req.body.expensesDescription
                 }
             }
         );
-        updateIncome.then(results => {
-            console.log('updateIncome : ', updateIncome._update.$set);
+        updateExpense.then(results => {
+            console.log('updateExpense : ', updateExpense._update.$set);
             resp.status(200).json({
                 statusCode: 201,
-                message: 'income update successful',
-                dataSet: updateIncome._update.$set
+                message: 'Expense update successful',
+                dataSet: updateExpense._update.$set
             });
         }).catch(reason => {
             console.log('reason : ', reason);
@@ -124,11 +124,11 @@ const updateIncome = async (req, resp) => {
     });
 }
 
-//delete income for specific customer
-const deleteIncome = async (req, resp) => {
+//delete Expenses for specific customer
+const deleteExpenses = async (req, resp) => {
     const token = req.headers.token ? req.headers.token : 'empty';
-    const incomeName = req.body.incomeName ? req.body.incomeName : 'empty';
-    console.log('income delete method called', req.body.incomeName, ' | ', typeof token)
+    const expensesName = req.body.expensesName ? req.body.expensesName : 'empty';
+    console.log('income delete method called', req.body.expensesName, ' | ', typeof token)
     let tempEmail = '';
 
     if ('empty' === token) {
@@ -136,8 +136,8 @@ const deleteIncome = async (req, resp) => {
         return;
     }
 
-    if ('empty' === incomeName) {
-        resp.status(401).json({statusCode: 401, message: 'null income name.'});
+    if ('empty' === expensesName) {
+        resp.status(401).json({statusCode: 401, message: 'null Expenses name.'});
         return;
     }
 
@@ -155,13 +155,13 @@ const deleteIncome = async (req, resp) => {
         })
     }).then(value => {
         console.log('decode value in update income', value);
-        IncomeSchema.deleteOne({
+        ExpensesSchema.deleteOne({
             userEmail: tempEmail,
-            incomeName: incomeName
+            expensesName: expensesName
         }).then(value => {
             console.log('value : ', value);
             resp.status(500).json({
-                message: 'income delete success.',
+                message: 'Expenses delete success.',
                 state: 201,
                 dataSet: value
             });
@@ -177,8 +177,8 @@ const deleteIncome = async (req, resp) => {
     });
 }
 
-// get all income for specific id customer
-const getAllIncome = async (req, resp) => {
+// get all Expenses for specific id customer
+const getAllExpenses = async (req, resp) => {
     console.log('get all token : ', req.headers.token);
     const token = req.headers.token ? req.headers.token : 'empty';
     let tempMail;
@@ -207,10 +207,10 @@ const getAllIncome = async (req, resp) => {
 
     isValid.then(value => {
         console.log('is valid value : ', value);
-        IncomeSchema.find({userEmail: tempMail}).then(result => {
+        ExpensesSchema.find({userEmail: tempMail}).then(result => {
             resp.status(200).json({
                 statusCode: 200,
-                message: 'allIncome For this user',
+                message: 'all expenses For this user',
                 dataSet: result
             });
         })
@@ -222,8 +222,8 @@ const getAllIncome = async (req, resp) => {
 }
 
 module.exports = {
-    addIncome,
-    getAllIncome,
-    updateIncome,
-    deleteIncome
+    addExpenses,
+    getAllExpenses,
+    updateExpenses,
+    deleteExpenses
 }

@@ -4,8 +4,8 @@ const incomeController = require('../controllers/IncomeController');
 const router = express.Router();
 
 router.post('/addIncome', incomeController.addIncome);
-// router.get('',);
-// router.put('',);
-// router.delete('',);
+router.get('/getAllIncome', incomeController.getAllIncome);
+router.put('/updateIncome', incomeController.updateIncome);
+router.delete('/deleteIncome', incomeController.deleteIncome);
 
 module.exports = router;

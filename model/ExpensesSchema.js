@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-let IncomeSchema = new mongoose.Schema({
-    incomeName: {
+let ExpensesSchema = new mongoose.Schema({
+    expensesName: {
         type: String,
         required: true,
         unique: true
@@ -10,11 +10,7 @@ let IncomeSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    incomeCategory: {
-        type: String,
-        required: true
-    },
-    incomeType: {
+    expensesCategory: {
         type: String,
         required: true
     },
@@ -28,18 +24,22 @@ let IncomeSchema = new mongoose.Schema({
             required: true
         }
     },
-    incomeStatus: {
+    paymentMethod: {
         type: String,
         default: true
     },
-    incomeAmount: {
+    expensesStatus: {
+        type: String,
+        default: true
+    },
+    expensesAmount: {
         type: Number,
         required: true
     },
-    incomeDescription: {
+    expensesDescription: {
         type: String,
         required: true
     }
 });
 
-module.exports = mongoose.model('Income', IncomeSchema);
+module.exports = mongoose.model('expenses', ExpensesSchema);

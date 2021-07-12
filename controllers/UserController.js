@@ -87,7 +87,7 @@ const registerUser = async (req, resp) => {
                                     });
                                     return;
                                 }
-
+                                console.log('email info', emailInfo)
                                 let dataObj = {
                                     statusCode: 200,
                                     message: 'Success.',
